@@ -6,28 +6,31 @@ import java.util.zip.ZipOutputStream;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+        String save1 = "D://gamees/savegames/save.dat1";
+        String save2 = "D://gamees/savegames/save.dat2";
+        String save3 = "D://gamees/savegames/save.dat3";
 
         GameProgress game1 = new GameProgress(90, 2, 1, 123.2);
         GameProgress game2 = new GameProgress(15, 1, 4, 892.0);
         GameProgress game3 = new GameProgress(50, 4, 3, 458.8);
 
 
-        savegame("D://gamees/savegames/save.dat1", game1);
-        savegame("D://gamees/savegames/save.dat2", game2);
-        savegame("D://gamees/savegames/save.dat3", game3);
+        savegame(save1, game1);
+        savegame(save2, game2);
+        savegame(save3, game3);
 
 
 
         String[] files = {
-                "D://gamees/savegames/save.dat1",
-                "D://gamees/savegames/save.dat2",
-                "D://gamees/savegames/save.dat3"
+                save1,
+                save2,
+                save3
         };
         zipFiles("D://gamees/savegames/test.zip", files);
 
-        for(String s:files) {
+        for(String s:files){
             File file = new File(s);
-            System.out.println(file.delete());
+            file.delete();
         }
     }
 
