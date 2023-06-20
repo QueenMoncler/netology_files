@@ -1,92 +1,65 @@
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Main {
-    public static final File DGAMES = new File("D://Gamees");
-    public static void main(String[] args)  {
-        StringBuilder sb = new StringBuilder();
-        String text = "";
+    static StringBuilder sb = new StringBuilder();
 
-        File srcDirect = new File(DGAMES, "src");
-        File resDirect = new File(DGAMES, "res");
-        File savegamesDirect = new File(DGAMES, "savegames");
-        File tempDirect = new File(DGAMES, "temp");
+    public static void main(String[] args) throws IOException {
 
-        if(srcDirect.mkdir()){
-            //text += "\nПапка "+srcDirect.getAbsolutePath()+" успешно создана");
-            text += "\nПапка "+srcDirect.getAbsolutePath()+" успешно создана";
-            File srcTestDirect = new File(srcDirect, "test");
-            if(srcTestDirect.mkdir()){
-                text += "\nПапка "+srcTestDirect.getAbsolutePath()+" успешно создана";
-                File srcMainDirect = new File(srcDirect, "main");
-                if(srcMainDirect.mkdir()){
-                    text += "\nПапка "+srcMainDirect.getAbsolutePath()+" успешно создана";
-                    File fileMain = new File(srcMainDirect.getAbsolutePath() + "//Main.java");
-                    File fileUtils = new File(srcMainDirect.getAbsolutePath() + "//Utils.java");
-                    try {
-                        fileMain.createNewFile();
-                        text += "\nФайл "+fileMain.getAbsolutePath()+" успешно создан";
-                        fileUtils.createNewFile();
-                        text += "\nФайл "+fileUtils.getAbsolutePath()+" успешно создан";
-                    } catch (IOException e) {
-                        throw new RuntimeException("Ошибка создания файлов");
+        ArrayList listFilesSrcMain = new ArrayList<>();
+        listFilesSrcMain.add("D://Gamees/src/main/Main.java");
+        listFilesSrcMain.add("D://Gamees/src/main/Utils.java");
+
+
+        ArrayList listFilesTemp = new ArrayList<>();
+        listFilesTemp.add("D://Gamees/temp/temp.txt");
+
+        HashMap map = new HashMap<>();
+        map.put("main", listFilesSrcMain);
+        map.put("temp", listFilesTemp);
+
+        ArrayList list = new ArrayList<>();
+        list.add("D://Gamees/src");
+        list.add("D://Gamees/src/main");
+        list.add("D://Gamees/src/test");
+        list.add("D://Gamees/res");
+        list.add("D://Gamees/res/drawables");
+        list.add("D://Gamees/res/vectors");
+        list.add("D://Gamees/res/icons");
+        list.add("D://Gamees/savegames");
+        list.add("D://Gamees/temp");
+
+        createDirectory(list, map);
+
+        try (FileWriter writer = new FileWriter((String) listFilesTemp.get(0), false)) {
+            writer.write(sb.toString());
+            writer.flush();
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static void createDirectory(ArrayList<String> list, HashMap m) {
+        for (String s : list) {
+            File file = new File(s);
+            if (file.mkdir()) {
+                sb.append("\n Директория " + file.getAbsolutePath() + " успешно создана");
+                if (m.containsKey(file.getName())) {
+                    ArrayList<String> listFiles = (ArrayList<String>) m.get(file.getName());
+                    for (String v : listFiles) {
+                        File createFile = new File(v);
+                        try {
+                            createFile.createNewFile();
+                            sb.append("\n Файл " + createFile.getAbsolutePath() + " успешно создан!");
+                        } catch (IOException e) {
+                            throw new RuntimeException("Ошибка создания файлов");
+                        }
                     }
-
                 }
-                else{text += "\nОшибка создания папки "+srcMainDirect.getAbsolutePath();}
-            }
-            else {text += "\nОшибка создания папки "+srcTestDirect.getAbsolutePath();}
+            } else sb.append("\n Ошибка создания Директории " + file.getAbsolutePath());
         }
-        else {text += "\nОшибка создания папки "+srcDirect.getAbsolutePath();}
-
-
-        if(resDirect.mkdir()){
-            text += "\nПапка "+resDirect.getAbsolutePath() +" успешно создана";
-            File resDrowablesDirect = new File(resDirect, "drawables");
-            if(resDrowablesDirect.mkdir()){
-                text += "\nПапка "+ resDrowablesDirect.getAbsolutePath() + " успешно создана";
-                File resVectorsDirect = new File(resDirect, "vectors");
-                if(resVectorsDirect.mkdir()){
-                    text += "\nПапка "+ resVectorsDirect.getAbsolutePath() + " успешно создана";
-                    File resIconsDirect = new File(resDirect, "icons");
-                    if(resIconsDirect.mkdir()){
-                        text += "\nПапка "+ resIconsDirect.getAbsolutePath() + " успешно создана";
-                    }
-                    else{ text += "\nОшибка создания папки "+resIconsDirect.getAbsolutePath();}
-                }
-                else{
-                    text += "\nОшибка создания папки "+resVectorsDirect.getAbsolutePath();
-                }
-            }
-            else {
-                text += "\nОшибка создания папки " + resDrowablesDirect.getAbsolutePath();
-            }
-        }
-
-        if(savegamesDirect.mkdir()){
-            text += "\nПапка "+ savegamesDirect.getAbsolutePath() +" успешно создана";
-        }
-        else{
-            text += "\nОшибка создания папки "+savegamesDirect.getAbsolutePath();
-        }
-
-        if(tempDirect.mkdir()){
-            text += "\nПапка "+ tempDirect.getAbsolutePath()+ " спешно создана";
-            File tempTempTxt = new File(tempDirect.getAbsolutePath(), "//temp.txt");
-            try {
-                tempTempTxt.createNewFile();
-                text += "\nФайл "+ tempTempTxt.getAbsolutePath()+" успешно создан";
-                FileOutputStream fos = new FileOutputStream(tempTempTxt.getAbsolutePath());
-
-                byte[] bytes = text.getBytes();
-                fos.write(bytes);
-            } catch (IOException e) {
-                throw new RuntimeException("Ошибка создания файлов");
-            }
-        }
-
-
-
     }
 }
